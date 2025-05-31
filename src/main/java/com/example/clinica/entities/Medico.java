@@ -1,5 +1,6 @@
 package com.example.clinica.entities;
 
+import com.example.clinica.ENUM.EspecialidadeMedica;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,9 +28,9 @@ public class Medico {
     @Column(length = 100)
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "id_especialidade", nullable = false)
-    private Especialidade especialidade;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EspecialidadeMedica especialidade;
 
     @CreationTimestamp
     private LocalDateTime criadoEm;
