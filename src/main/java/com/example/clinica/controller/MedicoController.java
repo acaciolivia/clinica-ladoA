@@ -1,7 +1,7 @@
 package com.example.clinica.controller;
 
-import com.example.clinica.entities.Consulta;
-import com.example.clinica.repository.ConsultaRepository;
+import com.example.clinica.entities.Medico;
+import com.example.clinica.repository.MedicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,54 +9,52 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/consultas")
+@RequestMapping("/medicos")
 public class MedicoController {
 
     @Autowired
-    private ConsultaRepository consultaRepository;
+    private MedicoRepository medicoRepository;
 
     @PostMapping
-    public ResponseEntity<Consulta> criar(@RequestBody Consulta consulta) {
-        Consulta novaConsulta = consultaRepository.save(consulta);
-        return ResponseEntity.ok(novaConsulta);
+    public ResponseEntity<Medico> criar(@RequestBody Medico medico) {
+        Medico novoMedico = medicoRepository.save(medico);
+        return ResponseEntity.ok(novoMedico);
     }
 
     @GetMapping
-    public ResponseEntity<List<Consulta>> listarTodas() {
-        List<Consulta> consultas = consultaRepository.findAll();
-        return ResponseEntity.ok(consultas);
+    public ResponseEntity<List<Medico>> listarTodos() {
+        List<Medico> medicos = medicoRepository.findAll();
+        return ResponseEntity.ok(medicos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Consulta> buscarPorId(@PathVariable Long id) {
-        return consultaRepository.findById(id)
+    public ResponseEntity<Medico> buscarPorId(@PathVariable Long id) {
+        return medicoRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Consulta> atualizar(@PathVariable Long id, @RequestBody Consulta consultaAtualizada) {
-        return consultaRepository.findById(id)
-                .map(consulta -> {
-                    consulta.setPaciente(consultaAtualizada.getPaciente());
-                    consulta.setMedico(consultaAtualizada.getMedico());
-                    consulta.setDataConsulta(consultaAtualizada.getDataConsulta());
-                    consulta.setHoraConsulta(consultaAtualizada.getHoraConsulta());
-                    consulta.setStatus(consultaAtualizada.getStatus());
-                    consulta.setMotivoCancelamento(consultaAtualizada.getMotivoCancelamento());
-                    consulta.setObservacoes(consultaAtualizada.getObservacoes());
-                    Consulta consultaSalva = consultaRepository.save(consulta);
-                    return ResponseEntity.ok(consultaSalva);
+    public ResponseEntity<Medico> atualizar(@PathVariable Long id, @RequestBody Medico medicoAtualizado) {
+        return medicoRepository.findById(id)
+                .map(medico -> {
+                    medico.setNome(medicoAtualizado.getNome());
+                    medico.setCrm(medicoAtualizado.getCrm());
+                    medico.setTelefone(medicoAtualizado.getTelefone());
+                    medico.setEmail(medicoAtualizado.getEmail());
+                    medico.setEspecialidade(medicoAtualizado.getEspecialidade());
+                    Medico medicoSalvo = medicoRepository.save(medico);
+                    return ResponseEntity.ok(medicoSalvo);
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        if (consultaRepository.existsById(id)) {
-            consultaRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
-    }
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+//        if (medicoRepository.existsById(id)) {
+//            medicoRepository.deleteById(id);
+//            return ResponseEntity.noContent().build();
+//        }
+//        return ResponseEntity.notFound().build();
+//    }
 }
