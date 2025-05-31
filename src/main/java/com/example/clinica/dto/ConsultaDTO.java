@@ -1,5 +1,8 @@
 package com.example.clinica.dto;
 
+import lombok.Data;
+
+@Data
 public class ConsultaDTO {
     private Long id;
     private Long pacienteId;
