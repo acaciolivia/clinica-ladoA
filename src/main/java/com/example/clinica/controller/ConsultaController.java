@@ -1,5 +1,6 @@
 package com.example.clinica.controller;
 
+import com.example.clinica.dto.ConsultaDTO;
 import com.example.clinica.entities.Consulta;
 import com.example.clinica.repository.ConsultaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/consultas")
@@ -22,9 +24,26 @@ public class ConsultaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Consulta>> listarTodas() {
+    public ResponseEntity<List<ConsultaDTO>> listarTodas() {
         List<Consulta> consultas = consultaRepository.findAll();
-        return ResponseEntity.ok(consultas);
+        List<ConsultaDTO> consultaDTOs = consultas.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(consultaDTOs);
+    }
+
+    private ConsultaDTO toDTO(Consulta consulta) {
+        ConsultaDTO dto = new ConsultaDTO();
+        dto.setId(consulta.getId());
+        dto.setPacienteId(consulta.getPaciente().getId());
+        dto.setMedicoId(consulta.getMedico().getId());
+        dto.setDataConsulta(consulta.getDataConsulta().toString());
+        dto.setHoraConsulta(consulta.getHoraConsulta().toString());
+        dto.setStatus(ConsultaDTO.StatusConsulta.valueOf(consulta.getStatus().name()));
+        dto.setMotivoCancelamento(consulta.getMotivoCancelamento());
+        dto.setObservacoes(consulta.getObservacoes());
+        dto.setCriadoEm(consulta.getCriadoEm().toString());
+        return dto;
     }
 
     @GetMapping("/{id}")
